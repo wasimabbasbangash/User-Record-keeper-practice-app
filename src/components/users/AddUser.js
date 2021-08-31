@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
 import classes from "./AddUser.module.css";
+import ErrorModal from "../ui/ErrorModal";
 
-function AddUser(props) {
+export default function AddUser(props) {
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredAge, setEnteredAge] = useState("");
+  const [error, setError] = useState(false);
 
   const handleAddUser = (event) => {
     event.preventDefault();
-    if (enteredUsername.trim().length !== 0 || !enteredAge.trim.length !== 0) {
-      if (+enteredAge > 0) {
-        console.log("in here");
-        setEnteredAge("");
-        setEnteredUsername("");
-        console.log(enteredUsername + " " + enteredAge);
-      }
+    if (enteredUsername.trim().length !== 0 && enteredAge.trim.length !== 0) {
+      props.addUserHandle(enteredUsername, enteredAge);
+      setEnteredAge("");
+      setEnteredUsername("");
+    } else {
+      setError({ title: "error Occured", message: "Something Went Wrong!" });
     }
   };
 
@@ -26,8 +27,19 @@ function AddUser(props) {
   const handleChangeAge = (event) => {
     setEnteredAge(event.target.value);
   };
+
+  const onclickHandle = () => {
+    setError("");
+  };
   return (
     <>
+      {error && (
+        <ErrorModal
+          onClickHandle={onclickHandle}
+          title={error.title}
+          message={error.message}
+        />
+      )}
       <Card className={classes.input}>
         <form onSubmit={handleAddUser}>
           <label htmlFor='username'>Username</label>
@@ -50,5 +62,3 @@ function AddUser(props) {
     </>
   );
 }
-
-export default AddUser;
